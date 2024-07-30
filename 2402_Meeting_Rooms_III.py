@@ -1,23 +1,32 @@
 class Solution:
     def mostBooked(self, n: int, meetings: List[List[int]]) -> int:
-        meetings.sort()
+        # sort based on the starting time
+        meetings = sorted(meetings, key=lambda x: x[0])
 
-        available = [i for i in range(n)]
-        used = []
+        # rooms[i] :=  min heap fro storing index of available rooms
+        rooms = [i for i in range(n)]
+
+        # count[i] := count number of meeting allocated to room i
         count = [0] * n
 
+        hpq = []    # min heap storing (finish time, index of room)
+
         for start, end in meetings:
-            while used and start >= used[0][0]:
-                _, room = heapq.heappop(used)
-                heapq.heappush(available, room)
 
-            if not available:
-                end_time, room = heapq.heappop(used)
-                end = end_time + (end - start)
-                heapq.heappush(available, room)
+            while hpq and hpq[0][0] <= start:
+                _, ind = heappop(hpq)
+                heappush(rooms, ind)
 
-            room = heapq.heappop(available)
-            heapq.heappush(used, (end, room))
-            count[room] += 1
+            if rooms:
+                i = heappop(rooms)
+                heappush(hpq, (end, i))
+                count[i] += 1
+
+            else:
+                finish, i = heappop(hpq)
+                delay = finish - start
+                new_end = end + delay
+                heappush(hpq, (new_end, i))
+                count[i] += 1
 
         return count.index(max(count))
