@@ -7,24 +7,24 @@ class Solution:
         if len(B) < len(A):
             A, B = B, A
 
-        l, r = 0, len(A) - 1
+        L, R = 0, len(A) - 1
         while True:
-            i = (l + r) // 2  # A
+            i = (L + R) // 2  # A
             j = half - i - 2  # B
 
-            Aleft = A[i] if i >= 0 else float("-infinity")
-            Aright = A[i + 1] if (i + 1) < len(A) else float("infinity")
-            Bleft = B[j] if j >= 0 else float("-infinity")
-            Bright = B[j + 1] if (j + 1) < len(B) else float("infinity")
+            A_left = A[i] if i >= 0 else float("-infinity")
+            A_right = A[i + 1] if (i + 1) < len(A) else float("infinity")
+            B_left = B[j] if j >= 0 else float("-infinity")
+            B_right = B[j + 1] if (j + 1) < len(B) else float("infinity")
 
             # partition is correct
-            if Aleft <= Bright and Bleft <= Aright:
+            if A_left <= B_right and B_left <= A_right:
                 # odd
                 if total % 2:
-                    return min(Aright, Bright)
+                    return min(A_right, B_right)
                 # even
-                return (max(Aleft, Bleft) + min(Aright, Bright)) / 2
-            elif Aleft > Bright:
-                r = i - 1
+                return (max(A_left, B_left) + min(A_right, B_right)) / 2
+            elif A_left > B_right:
+                R = i - 1
             else:
-                l = i + 1
+                L = i + 1
